@@ -1,0 +1,48 @@
+<div *ngFor='let storeDemand of retailLoads'>
+	<div class="card">
+		<div id="accordion">
+			<div class="card-header" data-toggle="collapse" [attr.data-target]="'#' + storeDemand.shiptoId"
+				aria-expanded="true">
+				<div class="mb-0 store">
+					<a class="store-name">
+						<span>{{storeDemand.shipToName}}</span>
+					</a>
+				</div>
+			</div>
+			<div class="collapse" [id]="storeDemand.shiptoId">
+				<div class="card-body">
+					<ng-container>
+          <table class="table product-table">
+            <thead>
+              <tr>
+                <th></th>
+                <th class="text-center" title="Carrier-Scheduled orders" *ngIf="storeDemand.carrierCountFlag">CC</th>
+                <th class="text-center" title="AM-Scheduled orders">AM</th>
+                <th class="text-center" title="PM-Scheduled orders">PM</th>
+                <th class="text-center" title="Delta = Demand Forecast - (AM Scheduled + PM Scheduled + Carrier Count)">&#x394;</th>
+              </tr>
+            </thead>
+            <tbody *ngFor="let product of storeDemand.wraProductSystems; trackBy: trackByShipToId" class="productList">
+              <tr class="product-demands" [style.background-color]="product.baseWraProductColorHexCode"
+              (dragstart)="onDragLoad($event, product)"
+              (dragend)="onDragEnd($event)"
+              [attr.draggable]="hasDragDropPermission"
+              >
+              <td>
+                <span title="Product Type - Demand Forecast" [style.color]="product.blendWraProductColorHexCode">{{product.baseWraProductDescription}} - {{(product.demandForecast? product.demandForecast : 'NA')}}</span>
+              </td>
+              <td class="text-center" title="Carrier-Scheduled orders" *ngIf="storeDemand.carrierCountFlag">{{product.carrierCount ? product.carrierCount: 0}}</td>
+              <td class="text-center" title="AM-Scheduled orders">{{product.amScheduled? product.amScheduled: 0}}</td>
+              <td class="text-center" title="PM-Scheduled orders">{{product.pmScheduled? product.pmScheduled: 0}}</td>
+              <td class="text-center" title="Delta = Demand Forecast - (AM Scheduled + PM Scheduled + Carrier Count)">
+                {{(product.demandForecast || 0) - ((product.amScheduled || 0) + (product.pmScheduled || 0) + (product.carrierCount || 0)) }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </ng-container>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
